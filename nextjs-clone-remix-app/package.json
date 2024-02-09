@@ -1,0 +1,26 @@
+{
+  "name": "nextjs-clone-remix-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "match-sorter": "^6.3.4",
+    "next": "14.1.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "sort-by": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
+    "typescript": "^5"
+  }
+}
