@@ -1,7 +1,14 @@
 import Image from "next/image";
+import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 import type { FunctionComponent } from "react";
 
 import type { ContactRecord } from "../../_data";
+import { getContact } from "../../_data";
+import { deleteContact } from "./action";
+import { EditContact } from "./edit-contact";
+import { DeleteContact } from "./delete-contact";
 
 type ContactPageProps = {
   params: {
@@ -9,27 +16,32 @@ type ContactPageProps = {
   };
 };
 
-export default function ContactPage(props: ContactPageProps) {
-  const contact = {
-    first: "Your",
-    last: "Name",
-    avatar: "https://placekitten.com/g/200/200",
-    twitter: "your_handle",
-    notes: "Some notes",
-    favorite: true,
-  };
+export default async function ContactPage(props: ContactPageProps) {
+  const contact = await getContact(props.params.contactId);
+
+  if (!contact) {
+    notFound();
+  }
+
+  async function editContact() {
+    "use server";
+
+    redirect(`/contacts/${props.params.contactId}/edit`);
+  }
 
   return (
     <div id="contact">
-      <div>
-        <Image
-          width={200}
-          height={200}
-          alt={`${contact.first} ${contact.last} avatar`}
-          key={contact.avatar}
-          src={contact.avatar}
-        />
-      </div>
+      {contact.avatar && (
+        <div>
+          <Image
+            width={200}
+            height={200}
+            alt={`${contact.first} ${contact.last} avatar`}
+            key={contact.avatar}
+            src={contact.avatar}
+          />
+        </div>
+      )}
 
       <div>
         <h1>
@@ -54,23 +66,15 @@ export default function ContactPage(props: ContactPageProps) {
         {contact.notes ? <p>{contact.notes}</p> : null}
 
         <div>
-          <form>
-            <button type="submit">Edit</button>
+          <form action={editContact}>
+            <button type="submit">Edit with no JS</button>
           </form>
 
-          {/* <form
-            onSubmit={(event) => {
-              const response = confirm(
-                "Please confirm you want to delete this record."
-              );
+          <EditContact contactId={props.params.contactId} />
 
-              if (!response) {
-                event.preventDefault();
-              }
-            }}
-          >
-            <button type="submit">Delete</button>
-          </form> */}
+          <DeleteContact
+            action={deleteContact.bind(null, props.params.contactId)}
+          />
         </div>
       </div>
     </div>

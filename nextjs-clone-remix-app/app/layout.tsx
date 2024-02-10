@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
-import Link from "next/link";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import type { ContactRecord } from "./_data";
+import { getContacts } from "./_data";
+import { createContact } from "./actions";
+import { SideNav } from "./side-nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,23 +17,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout(props: PropsWithChildren) {
+export default async function RootLayout(props: PropsWithChildren) {
   const q = "";
   const searching = false;
-  const contacts: ContactRecord[] = [
-    {
-      id: "1",
-      createdAt: "",
-      first: "Your",
-      last: "Name",
-    },
-    {
-      id: "1",
-      createdAt: "",
-      first: "Your",
-      last: "Friend",
-    },
-  ];
+  const contacts = await getContacts();
 
   return (
     <html lang="en">
@@ -52,35 +40,12 @@ export default function RootLayout(props: PropsWithChildren) {
               />
               <div id="search-spinner" aria-hidden hidden={!searching} />
             </form>
-            <form>
+            <form action={createContact}>
               <button type="submit">New</button>
             </form>
           </div>
-          <nav>
-            {contacts.length ? (
-              <ul>
-                {contacts.map((contact) => (
-                  <li key={contact.id}>
-                    {/* isActive ? "active" : isPending ? "pending" : "" */}
-                    <Link href={`/contacts/${contact.id}`}>
-                      {contact.first || contact.last ? (
-                        <>
-                          {contact.first} {contact.last}
-                        </>
-                      ) : (
-                        <i>No Name</i>
-                      )}{" "}
-                      {contact.favorite ? <span>★</span> : null}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>
-                <i>No contacts</i>
-              </p>
-            )}
-          </nav>
+
+          <SideNav contacts={contacts} />
         </div>
 
         {/* navigation.state === "loading" && !searching ? "loading" : "" */}

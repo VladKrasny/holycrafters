@@ -1,4 +1,6 @@
-import type { ContactRecord } from "../../../_data";
+import { notFound } from "next/navigation";
+import { getContact } from "@/app/_data";
+import { saveContact } from "./action";
 
 type EditContactPageProps = {
   params: {
@@ -7,13 +9,16 @@ type EditContactPageProps = {
 };
 
 export default async function EditContactPage(props: EditContactPageProps) {
-  const contact: ContactRecord = {
-    id: props.params.contactId,
-    createdAt: "",
-  };
+  const saveContactWithId = saveContact.bind(null, props.params.contactId);
+
+  const contact = await getContact(props.params.contactId);
+
+  if (!contact) {
+    notFound();
+  }
 
   return (
-    <form key={contact.id} id="contact-form">
+    <form key={contact.id} id="contact-form" action={saveContactWithId}>
       <p>
         <span>Name</span>
         <input
