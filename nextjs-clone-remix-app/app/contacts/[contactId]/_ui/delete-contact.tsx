@@ -1,6 +1,10 @@
 "use client";
 
-export function DeleteContact(props: { action: (formData: FormData) => void }) {
+type DeleteContactProps = {
+  action: (formData: FormData) => void;
+};
+
+export function DeleteContact(props: DeleteContactProps) {
   return (
     <form
       action={props.action}

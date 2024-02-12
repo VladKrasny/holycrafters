@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ContactRecord } from "./_data";
+import { ContactRecord } from "@/data";
 
 export function SideNav(props: { contacts: ContactRecord[] }) {
   const pathname = usePathname();

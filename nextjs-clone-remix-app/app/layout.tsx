@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
 import { Inter } from "next/font/google";
+import { getContacts } from "@/data";
+import { SideNav } from "./_ui";
 import "./globals.css";
 
-import { getContacts } from "./_data";
-import { createContact } from "./actions";
-import { SideNav } from "./side-nav";
+import { redirect } from "next/navigation";
+import { createEmptyContact } from "@/data";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,14 @@ export default async function RootLayout(props: PropsWithChildren) {
   const q = "";
   const searching = false;
   const contacts = await getContacts();
+
+  async function createContact() {
+    "use server";
+
+    const contact = await createEmptyContact();
+
+    redirect(`/contacts/${contact.id}/edit`);
+  }
 
   return (
     <html lang="en">

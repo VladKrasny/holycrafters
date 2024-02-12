@@ -1,6 +1,6 @@
-import { notFound } from "next/navigation";
-import { getContact } from "@/app/_data";
-import { saveContact } from "./action";
+import { notFound, redirect } from "next/navigation";
+import { getContact, updateContact } from "@/data";
+import { CancelEditing } from "./_ui";
 
 type EditContactPageProps = {
   params: {
@@ -9,16 +9,31 @@ type EditContactPageProps = {
 };
 
 export default async function EditContactPage(props: EditContactPageProps) {
-  const saveContactWithId = saveContact.bind(null, props.params.contactId);
-
   const contact = await getContact(props.params.contactId);
 
   if (!contact) {
     notFound();
   }
 
+  async function saveContact(contactId: string, formData: FormData) {
+    "use server";
+
+    if (!contactId) {
+      throw new Error("Missing contactId param");
+    }
+
+    const updates = Object.fromEntries(formData);
+    await updateContact(contactId, updates);
+
+    return redirect(`/contacts/${contactId}`);
+  }
+
   return (
-    <form key={contact.id} id="contact-form" action={saveContactWithId}>
+    <form
+      key={contact.id}
+      id="contact-form"
+      action={saveContact.bind(null, props.params.contactId)}
+    >
       <p>
         <span>Name</span>
         <input
@@ -61,7 +76,7 @@ export default async function EditContactPage(props: EditContactPageProps) {
       </label>
       <p>
         <button type="submit">Save</button>
-        <button type="button">Cancel</button>
+        <CancelEditing />
       </p>
     </form>
   );

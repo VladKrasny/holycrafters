@@ -1,14 +1,8 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import type { FunctionComponent } from "react";
-
-import type { ContactRecord } from "../../_data";
-import { getContact } from "../../_data";
-import { deleteContact } from "./action";
-import { EditContact } from "./edit-contact";
-import { DeleteContact } from "./delete-contact";
+import { getContact, deleteContact as _deleteContact } from "@/data";
+import { DeleteContact, EditContact, Favorite } from "./_ui";
 
 type ContactPageProps = {
   params: {
@@ -27,6 +21,18 @@ export default async function ContactPage(props: ContactPageProps) {
     "use server";
 
     redirect(`/contacts/${props.params.contactId}/edit`);
+  }
+
+  async function deleteContact(contactId: string) {
+    "use server";
+
+    if (!contactId) {
+      throw new Error("Missing contactId param");
+    }
+
+    await _deleteContact(contactId);
+
+    return redirect(`/`);
   }
 
   return (
@@ -80,21 +86,3 @@ export default async function ContactPage(props: ContactPageProps) {
     </div>
   );
 }
-
-const Favorite: FunctionComponent<{
-  contact: Pick<ContactRecord, "favorite">;
-}> = ({ contact }) => {
-  const favorite = contact.favorite;
-
-  return (
-    <form>
-      <button
-        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-        name="favorite"
-        value={favorite ? "false" : "true"}
-      >
-        {favorite ? "★" : "☆"}
-      </button>
-    </form>
-  );
-};

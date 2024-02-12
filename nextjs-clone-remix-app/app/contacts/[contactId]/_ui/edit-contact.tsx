@@ -1,7 +1,12 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 
-export function EditContact(props: { contactId: string }) {
+type EditContactProps = {
+  contactId: string;
+};
+
+export function EditContact(props: EditContactProps) {
   const router = useRouter();
 
   function onClick() {
