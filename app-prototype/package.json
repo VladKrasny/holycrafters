@@ -1,5 +1,5 @@
 {
-  "name": "app-prototype-ae12",
+  "name": "app-prototype",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -39,7 +39,6 @@
   "dependencies": {
     "@conform-to/react": "^1.0.0",
     "@conform-to/zod": "^1.0.0",
-    "@epic-web/cachified": "^5.1.1",
     "@epic-web/client-hints": "^1.3.0",
     "@epic-web/invariant": "^1.0.0",
     "@epic-web/remember": "^1.0.2",
@@ -59,8 +58,6 @@
     "@remix-run/node": "^2.5.0",
     "@remix-run/react": "^2.5.0",
     "@remix-run/server-runtime": "^2.5.0",
-    "@sentry/profiling-node": "^1.3.5",
-    "@sentry/remix": "^7.93.0",
     "address": "^2.0.1",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.3.0",
@@ -92,7 +89,6 @@
     "react-dom": "^18.2.0",
     "remix-auth": "^3.6.0",
     "remix-auth-form": "^1.4.0",
-    "remix-auth-github": "^1.6.0",
     "remix-utils": "^7.5.0",
     "set-cookie-parser": "^2.6.0",
     "sonner": "^1.3.1",

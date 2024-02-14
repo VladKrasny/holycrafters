@@ -1,16 +1,12 @@
 import crypto from 'crypto'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import {
-	createRequestHandler as _createRequestHandler,
-	type RequestHandler,
-} from '@remix-run/express'
+import { createRequestHandler, type RequestHandler } from '@remix-run/express'
 import {
 	broadcastDevReady,
 	installGlobals,
 	type ServerBuild,
 } from '@remix-run/node'
-import * as Sentry from '@sentry/remix'
 import { ip as ipAddress } from 'address'
 import chalk from 'chalk'
 import closeWithGrace from 'close-with-grace'
@@ -24,10 +20,6 @@ import morgan from 'morgan'
 installGlobals()
 
 const MODE = process.env.NODE_ENV
-
-const createRequestHandler = Sentry.wrapExpressCreateRequestHandler(
-	_createRequestHandler,
-)
 
 const BUILD_PATH = '../build/index.js'
 const WATCH_PATH = '../build/version.txt'
@@ -76,9 +68,6 @@ app.use(compression())
 // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
 app.disable('x-powered-by')
 
-app.use(Sentry.Handlers.requestHandler())
-app.use(Sentry.Handlers.tracingHandler())
-
 // Remix fingerprints its assets so we can cache forever.
 app.use(
 	'/build',
@@ -119,11 +108,9 @@ app.use(
 			// NOTE: Remove reportOnly when you're ready to enforce this CSP
 			reportOnly: true,
 			directives: {
-				'connect-src': [
-					MODE === 'development' ? 'ws:' : null,
-					process.env.SENTRY_DSN ? '*.ingest.sentry.io' : null,
-					"'self'",
-				].filter(Boolean),
+				'connect-src': [MODE === 'development' ? 'ws:' : null, "'self'"].filter(
+					Boolean,
+				),
 				'font-src': ["'self'"],
 				'frame-src': ["'self'"],
 				'img-src': ["'self'", 'data:'],

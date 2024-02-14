@@ -25,7 +25,6 @@ import {
 	useMatches,
 	useSubmit,
 } from '@remix-run/react'
-import { withSentry } from '@sentry/remix'
 import { useRef } from 'react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
@@ -277,7 +276,7 @@ function Logo() {
 	)
 }
 
-function AppWithProviders() {
+export default function AppWithProviders() {
 	const data = useLoaderData<typeof loader>()
 	return (
 		<HoneypotProvider {...data.honeyProps}>
@@ -285,8 +284,6 @@ function AppWithProviders() {
 		</HoneypotProvider>
 	)
 }
-
-export default withSentry(AppWithProviders)
 
 function UserDropdown() {
 	const user = useUser()
