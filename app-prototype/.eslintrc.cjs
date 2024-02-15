@@ -1,7 +1,3 @@
-const vitestFiles = ['app/**/__tests__/**/*', 'app/**/*.{spec,test}.*']
-const testFiles = ['**/tests/**', ...vitestFiles]
-const appFiles = ['app/**']
-
 /** @type {import('@types/eslint').Linter.BaseConfig} */
 module.exports = {
 	extends: [
@@ -40,8 +36,7 @@ module.exports = {
 	overrides: [
 		{
 			plugins: ['remix-react-routes'],
-			files: appFiles,
-			excludedFiles: testFiles,
+			files: ['app/**'],
 			rules: {
 				'remix-react-routes/use-link-for-routes': 'error',
 				'remix-react-routes/require-valid-paths': 'error',
@@ -49,36 +44,11 @@ module.exports = {
 				// route convention. Someone should dig deeper into this...
 				'remix-react-routes/no-relative-paths': [
 					'off',
-					{ allowLinksToSelf: true },
-				],
-				'remix-react-routes/no-urls': 'error',
-				'no-restricted-imports': [
-					'error',
 					{
-						patterns: [
-							{
-								group: testFiles,
-								message: 'Do not import test files in app files',
-							},
-						],
+						allowLinksToSelf: true,
 					},
 				],
-			},
-		},
-		{
-			extends: ['@remix-run/eslint-config/jest-testing-library'],
-			files: vitestFiles,
-			rules: {
-				'testing-library/no-await-sync-events': 'off',
-				'jest-dom/prefer-in-document': 'off',
-			},
-			// we're using vitest which has a very similar API to jest
-			// (so the linting plugins work nicely), but it means we have to explicitly
-			// set the jest version.
-			settings: {
-				jest: {
-					version: 28,
-				},
+				'remix-react-routes/no-urls': 'error',
 			},
 		},
 	],

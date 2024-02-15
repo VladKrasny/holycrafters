@@ -1,10 +1,5 @@
 import { type SVGProps } from 'react'
 import { cn } from '#app/utils/misc.tsx'
-import { type IconName } from '@/icon-name'
-import href from './icons/sprite.svg'
-
-export { href }
-export { IconName }
 
 const sizeClassName = {
 	font: 'w-[1em] h-[1em]',
@@ -41,7 +36,7 @@ export function Icon({
 	children,
 	...props
 }: SVGProps<SVGSVGElement> & {
-	name: IconName
+	name: string
 	size?: Size
 }) {
 	if (children) {
@@ -54,12 +49,13 @@ export function Icon({
 			</span>
 		)
 	}
+
 	return (
 		<svg
 			{...props}
 			className={cn(sizeClassName[size], 'inline self-center', className)}
 		>
-			<use href={`${href}#${name}`} />
+			{name}
 		</svg>
 	)
 }

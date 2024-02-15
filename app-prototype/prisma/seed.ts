@@ -8,7 +8,7 @@ import {
 	getNoteImages,
 	getUserImages,
 	img,
-} from '#tests/db-utils.ts'
+} from '#mocks/db-utils'
 
 async function seed() {
 	console.log('🌱 Seeding...')

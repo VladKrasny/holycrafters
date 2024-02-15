@@ -8,12 +8,11 @@ node_modules
 
 /prisma/data.db
 /prisma/data.db-journal
-/tests/prisma
 
 /test-results/
 /playwright-report/
 /playwright/.cache/
-/tests/fixtures/email/
+/mocks/fixtures/email/
 /coverage
 
 /other/cache.db

@@ -11,88 +11,38 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(cuid())
-  email    String  @unique
-  username String  @unique
-  name     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  image    UserImage?
-  password Password?
-  notes    Note[]
-  roles    Role[]
-  sessions Session[]
-}
-
-model Note {
-  id      String @id @default(cuid())
-  title   String
-  content String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ownerId String
-
-  images NoteImage[]
-
-  // non-unique foreign key
-  @@index([ownerId])
-  // This helps our order by in the user search a LOT
-  @@index([ownerId, updatedAt])
-}
-
-model NoteImage {
   id          String  @id @default(cuid())
-  altText     String?
-  contentType String
-  blob        Bytes
+  email       String  @unique
+  firstName   String
+  lastName    String
+  deactivated Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  noteId String
-
-  // non-unique foreign key
-  @@index([noteId])
-}
-
-model UserImage {
-  id          String  @id @default(cuid())
-  altText     String?
-  contentType String
-  blob        Bytes
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  password       Password?
+  roles          Role[]
+  sessions       Session[]
+  clientCardNote ClientCardNote[]
 }
 
 model Password {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 }
 
-model Session {
-  id             String   @id @default(cuid())
-  expirationDate DateTime
+model Role {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
-
-  // non-unique foreign key
-  @@index([userId])
+  users       User[]
+  permissions Permission[]
 }
 
 model Permission {
@@ -110,16 +60,70 @@ model Permission {
   @@unique([action, entity, access])
 }
 
-model Role {
-  id          String @id @default(cuid())
-  name        String @unique
-  description String @default("")
+model Session {
+  id             String   @id @default(cuid())
+  expirationDate DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users       User[]
-  permissions Permission[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // non-unique foreign key
+  @@index([userId])
+}
+
+model ClientCard {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  // add here client specific inforamtion
+  verified  Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  note ClientCardNote[]
+}
+
+model ClientCardNote {
+  id String @id @default(cuid())
+
+  content String
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  clientCard   ClientCard @relation(fields: [clientCardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  clientCardId String
+}
+
+model Note {
+  id      String @id @default(cuid())
+  title   String
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  images NoteImage[]
+}
+
+model NoteImage {
+  id          String  @id @default(cuid())
+  altText     String?
+  contentType String
+  blob        Bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  noteId String
+
+  // non-unique foreign key
+  @@index([noteId])
 }
 
 model Verification {
