@@ -60,13 +60,13 @@ export async function requireAnonymous(request: Request) {
 }
 
 export async function login({
-	username,
+	email,
 	password,
 }: {
-	username: User['username']
+	email: string
 	password: string
 }) {
-	const user = await verifyUserPassword({ username }, password)
+	const user = await verifyUserPassword({ email }, password)
 	if (!user) return null
 	const session = await prisma.session.create({
 		select: { id: true, expirationDate: true, userId: true },
@@ -79,15 +79,15 @@ export async function login({
 }
 
 export async function resetUserPassword({
-	username,
+	email,
 	password,
 }: {
-	username: User['username']
+	email: string
 	password: string
 }) {
 	const hashedPassword = await getPasswordHash(password)
 	return prisma.user.update({
-		where: { username },
+		where: { email },
 		data: {
 			password: {
 				update: {
@@ -98,28 +98,28 @@ export async function resetUserPassword({
 	})
 }
 
-export async function signup({
-	email,
-	username,
-	password,
-	name,
-}: {
+/**{
+	firstName: string;
+
 	email: User['email']
-	username: User['username']
-	name: User['name']
 	password: string
-}) {
-	const hashedPassword = await getPasswordHash(password)
+} */
+type UserSignup = Pick<User, 'firstName' | 'lastName' | 'email'> & {
+	password: string
+}
+
+export async function signup(params: UserSignup) {
+	const hashedPassword = await getPasswordHash(params.password)
 
 	const session = await prisma.session.create({
 		data: {
 			expirationDate: getSessionExpirationDate(),
 			user: {
 				create: {
-					email: email.toLowerCase(),
-					username: username.toLowerCase(),
-					name,
-					roles: { connect: { name: 'user' } },
+					email: params.email.toLowerCase(),
+					firstName: params.firstName,
+					lastName: params.lastName,
+					roles: { connect: { name: '' } },
 					password: {
 						create: {
 							hash: hashedPassword,
@@ -170,7 +170,7 @@ export async function getPasswordHash(password: string) {
 }
 
 export async function verifyUserPassword(
-	where: Pick<User, 'username'> | Pick<User, 'id'>,
+	where: Pick<User, 'email'> | Pick<User, 'id'>,
 	password: Password['hash'],
 ) {
 	const userWithPassword = await prisma.user.findUnique({

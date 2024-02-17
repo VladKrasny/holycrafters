@@ -119,7 +119,6 @@
     "@vitest/coverage-v8": "^1.2.1",
     "autoprefixer": "^10.4.17",
     "chokidar": "^3.5.3",
-    "enforce-unique": "^1.2.0",
     "esbuild": "^0.19.11",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
